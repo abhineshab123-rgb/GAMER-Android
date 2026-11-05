@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>GAMER — Tournament Hub</title>
+<style>
+:root{--bg:#090b10;--panel:#141923;--panel2:#1b2330;--red:#ff3b4e;--muted:#9ba6b7;--text:#f4f6fb;--line:#293244;--green:#39d98a}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:15px system-ui,-apple-system,Segoe UI,sans-serif}
+header{padding:20px 18px 14px;background:linear-gradient(130deg,#1d1118,#111827 65%,#10131b);border-bottom:1px solid var(--line);position:sticky;top:0;z-index:3}
+.brand{font-size:26px;font-weight:900;letter-spacing:2px}.brand span{color:var(--red)}.tag{font-size:11px;color:var(--muted);letter-spacing:2px;margin-top:2px}
+.top{display:flex;align-items:center;justify-content:space-between;gap:12px}.login{border:1px solid #596579;background:#202938;color:white;border-radius:22px;padding:9px 13px;font-weight:700}
+main{max-width:720px;margin:auto;padding:18px 15px 90px}.hero{padding:20px;border-radius:18px;background:linear-gradient(135deg,#4a1521,#211b2c 60%,#142337);border:1px solid #62303e}
+.hero small{color:#ffc4cb;font-weight:800;letter-spacing:1.5px}.hero h1{font-size:26px;margin:8px 0}.hero p{color:#e0d8df;margin:0 0 14px}.btn{border:0;border-radius:11px;background:var(--red);color:white;padding:11px 15px;font-weight:800;cursor:pointer}.btn.secondary{background:#273246;border:1px solid #40506a}.section{margin-top:23px}.section h2{font-size:18px;margin:0 0 12px}.modes{display:grid;grid-template-columns:repeat(3,1fr);gap:9px}.mode{background:var(--panel);border:1px solid var(--line);border-radius:13px;padding:14px 8px;text-align:center;cursor:pointer}.mode b{display:block;margin-top:5px}.mode.active{border-color:var(--red);background:#281820}
+.cards{display:grid;gap:11px}.card{background:var(--panel);border:1px solid var(--line);border-radius:15px;padding:15px}.cardhead{display:flex;justify-content:space-between;gap:10px}.pill{font-size:11px;color:#ffc4cb;background:#48202b;border-radius:20px;padding:5px 9px;height:max-content;font-weight:800}.muted{color:var(--muted);font-size:13px}.details{display:flex;gap:16px;flex-wrap:wrap;margin:12px 0}.details strong{display:block;font-size:14px}.card .btn{width:100%}
+nav{position:fixed;bottom:0;left:0;right:0;background:#10151f;border-top:1px solid var(--line);display:flex;justify-content:center;gap:5px;padding:9px 8px calc(9px + env(safe-area-inset-bottom));z-index:4}
+nav button{flex:1;max-width:170px;background:transparent;border:0;color:var(--muted);padding:8px 4px;border-radius:9px;font-weight:700}nav button.active{color:white;background:#29202a}
+.view{display:none}.view.active{display:block}.empty{padding:25px;text-align:center;color:var(--muted)}
+input,select{width:100%;padding:12px;border-radius:10px;border:1px solid var(--line);background:#0e131c;color:white;margin:6px 0 13px}
+label{font-size:13px;color:#c4ccda}.row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+table{width:100%;border-collapse:collapse}td,th{text-align:left;padding:11px 7px;border-bottom:1px solid var(--line);font-size:13px}
+.notice{background:#14271f;border:1px solid #285a43;color:#b9f5d7;padding:11px;border-radius:10px;font-size:13px;margin:12px 0}
+.modal{position:fixed;inset:0;background:#000b;display:none;align-items:center;justify-content:center;padding:18px;z-index:10}.modal.show{display:flex}.modalbox{background:var(--panel);border:1px solid var(--line);border-radius:17px;padding:20px;width:100%;max-width:420px}
+.close{float:right;background:none;border:0;color:white;font-size:22px}
+@media(min-width:600px){.cards{grid-template-columns:1fr 1fr}.hero h1{font-size:32px}}
+</style>
+</head>
+<body>
+<header><div class="top"><div><div class="brand">GA<span>MER</span></div><div class="tag">FREE FIRE TOURNAMENT HUB</div></div><button class="login" id="loginBtn">◎ Sign in with Google</button></div></header>
+<main>
+<section id="home" class="view active">
+ <div class="hero"><small>READY. DROP. WIN.</small><h1>Your next tournament starts here.</h1><p>Find a match, register your team and follow the leaderboard.</p><button class="btn" onclick="document.querySelector('[data-tab= tournaments]').click()">Explore tournaments</button></div>
+ <div class="section"><h2>Choose your mode</h2><div class="modes">
+  <div class="mode active" data-mode="Solo">👤<b>Solo</b><span class="muted">1 player</span></div>
+  <div class="mode" data-mode="Duo">👥<b>Duo</b><span class="muted">2 players</span></div>
+  <div class="mode" data-mode="Squad">🏆<b>Squad</b><span class="muted">4 players</span></div>
+ </div></div>
+ <div class="section"><h2>Featured tournaments</h2><div class="cards" id="featured"></div></div>
+</section>
+<section id="tournaments" class="view">
+ <div class="section"><h2>All tournaments</h2><p class="muted">Select a mode to filter the matches.</p><div class="modes">
+ <div class="mode active" data-filter="All">All</div><div class="mode" data-filter="Solo">Solo</div><div class="mode" data-filter="Duo">Duo</div>
+ </div><div class="mode" style="margin-top:9px" data-filter="Squad">🏆 Squad</div></div>
+ <div class="section cards" id="allCards"></div>
+</section>
+<section id="leaderboard" class="view">
+ <div class="section"><h2>Leaderboard</h2><div class="card"><div class="muted">DEMO RESULTS · SEASON 1</div><table><thead><tr><th>Rank</th><th>Player / Team</th><th>Points</th></tr></thead><tbody>
+ <tr><td>🥇 1</td><td>ShadowX</td><td>245</td></tr><tr><td>🥈 2</td><td>Team Nova</td><td>220</td></tr><tr><td>🥉 3</td><td>Rider07</td><td>198</td></tr><tr><td>4</td><td>Blaze Squad</td><td>175</td></tr>
+ </tbody></table></div></div>
+</section>
+<section id="profile" class="view">
+ <div class="section"><h2>Player profile</h2><div class="card"><div id="profileStatus" class="muted">You are browsing as a guest.</div><div class="notice">Google sign-in is a demo button in this prototype. Real Google login needs Firebase configuration.</div><button class="btn" onclick="googleLogin()">Continue with Google</button></div></div>
+ <div class="section"><h2>My registrations</h2><div class="card" id="myRegs"><div class="empty">No tournaments joined yet.</div></div></div>
+</section>
+<section id="admin" class="view">
+ <div class="section"><h2>Admin preview</h2><p class="muted">Demo only — connect a secure admin account before publishing.</p>
+ <div class="card"><label>Tournament name</label><input id="newName" placeholder="e.g. Weekend Clash"><div class="row"><div><label>Mode</label><select id="newMode"><option>Solo</option><option>Duo</option><option>Squad</option></select></div><div><label>Entry</label><select id="newEntry"><option>Free</option></select></div></div><label>Start time</label><input id="newTime" placeholder="e.g. Saturday, 6:00 PM"><button class="btn" onclick="addTournament()">Add demo tournament</button></div></div>
+</section>
+</main>
+<nav>
+ <button class="active" data-tab="home">⌂<br>Home</button><button data-tab="tournaments">⚔<br>Matches</button><button data-tab="leaderboard">🏆<br>Ranks</button><button data-tab="profile">◉<br>Profile</button><button data-tab="admin">⚙<br>Admin</button>
+</nav>
+<div class="modal" id="modal"><div class="modalbox"><button class="close" onclick="closeModal()">×</button><h2 id="modalTitle">Join tournament</h2><p class="muted" id="modalInfo"></p><label>In-game nickname</label><input id="nick" placeholder="Your nickname"><div id="teammates"></div><button class="btn" style="width:100%" onclick="confirmJoin()">Confirm free registration</button><p class="muted">This demo stores registrations only in this browser.</p></div></div>
+<script>
+let tournaments=[
+ {id:1,name:"Rookie Showdown",mode:"Solo",time:"Today · 6:00 PM",slots:"24 / 48",prize:"Practice event"},
+ {id:2,name:"Duo Night Clash",mode:"Duo",time:"Tomorrow · 7:00 PM",slots:"12 / 24 teams",prize:"Practice event"},
+ {id:3,name:"Squad Champions",mode:"Squad",time:"Sunday · 5:30 PM",slots:"8 / 12 teams",prize:"Practice event"},
+ {id:4,name:"Solo Skill Arena",mode:"Solo",time:"Sunday · 8:00 PM",slots:"18 / 48",prize:"Practice event"}
+];
+let selected=null, regs=JSON.parse(localStorage.getItem("gamerRegs")||"[]"), user=null, activeMode="Solo", filter="All";
+function card(t){return `<div class="card"><div class="cardhead"><b>${t.name}</b><span class="pill">${t.mode}</span></div><div class="details"><div><span class="muted">Starts</span><strong>${t.time}</strong></div><div><span class="muted">Slots</span><strong>${t.slots}</strong></div><div><span class="muted">Event</span><strong>${t.prize}</strong></div></div><button class="btn" onclick="openJoin(${t.id})">Register free</button></div>`}
+function render(){document.getElementById("featured").innerHTML=tournaments.filter(t=>t.mode===activeMode).slice(0,2).map(card).join("")||'<div class="empty">No featured matches yet.</div>';document.getElementById("allCards").innerHTML=tournaments.filter(t=>filter==="All"||t.mode===filter).map(card).join("");document.getElementById("myRegs").innerHTML=regs.length?regs.map(r=>`<p>✓ ${r.tournament} — ${r.mode} <span class="muted">(${r.nickname})</span></p>`).join(""):'<div class="empty">No tournaments joined yet.</div>';}
+document.querySelectorAll("nav button").forEach(b=>b.onclick=()=>{document.querySelectorAll("nav button").forEach(x=>x.classList.toggle("active",x===b));document.querySelectorAll(".view").forEach(x=>x.classList.toggle("active",x.id===b.dataset.tab));});
+document.querySelectorAll("[data-mode]").forEach(b=>b.onclick=()=>{activeMode=b.dataset.mode;document.querySelectorAll("[data-mode]").forEach(x=>x.classList.toggle("active",x===b));render();});
+document.querySelectorAll("[data-filter]").forEach(b=>b.onclick=()=>{filter=b.dataset.filter;document.querySelectorAll("[data-filter]").forEach(x=>x.classList.toggle("active",x===b));render();});
+function openJoin(id){selected=tournaments.find(t=>t.id===id);document.getElementById("modalTitle").textContent="Join "+selected.name;document.getElementById("modalInfo").textContent=selected.mode+" · "+selected.time+" · Free entry";let n=selected.mode==="Duo"?1:selected.mode==="Squad"?3:0;document.getElementById("teammates").innerHTML=Array.from({length:n},(_,i)=>`<label>Teammate ${i+1} nickname</label><input class="mate" placeholder="Teammate ${i+1}">`).join("");document.getElementById("modal").classList.add("show");}
+function closeModal(){document.getElementById("modal").classList.remove("show")}
+function confirmJoin(){let nickname=document.getElementById("nick").value.trim();if(!nickname){alert("Enter your in-game nickname.");return}let mates=[...document.querySelectorAll(".mate")].map(x=>x.value.trim());if(mates.some(x=>!x)){alert("Enter all teammate nicknames.");return}regs.push({tournament:selected.name,mode:selected.mode,nickname});localStorage.setItem("gamerRegs",JSON.stringify(regs));closeModal();render();alert("Demo registration saved on this device!");}
+function googleLogin(){alert("Google sign-in is not connected yet. Add your Firebase project settings to enable real Google authentication.");}
+document.getElementById("loginBtn").onclick=googleLogin;
+function addTournament(){let name=document.getElementById("newName").value.trim();if(!name){alert("Enter a tournament name.");return}tournaments.push({id:Date.now(),name,mode:document.getElementById("newMode").value,time:document.getElementById("newTime").value||"Time to be announced",slots:"0 / TBD",prize:"Practice event"});document.getElementById("newName").value="";render();alert("Demo tournament added.");}
+render();
+</script>
+</body></html>
