@@ -16,12 +16,12 @@ jobs:
       - uses: actions/setup-java@v4
         with:
           distribution: temurin
-          java-version: '17
-          
-  - name: Setup Android SDK
-  uses: android-actions/setup-android@v4
-  with:
-    accept-android-sdk-licenses: true
+          java-version: '17'
+
+      - name: Setup Android SDK
+        uses: android-actions/setup-android@v4
+        with:
+          accept-android-sdk-licenses: true
 
       - uses: gradle/actions/setup-gradle@v4
         with:
@@ -40,9 +40,11 @@ jobs:
               id("com.android.application")
               id("org.jetbrains.kotlin.android")
           }
+
           android {
               namespace = "com.gamer.tournament"
               compileSdk = 35
+
               defaultConfig {
                   applicationId = "com.gamer.tournament"
                   minSdk = 23
