@@ -16,12 +16,9 @@ jobs:
       - uses: actions/setup-java@v4
         with:
           distribution: temurin
-          java-version: '17'
-
-      - name: Setup Android SDK
+          java-version: '17
+          
   uses: android-actions/setup-android@v4
-  with:
-    accept-android-sdk-licenses: true
 
       - uses: gradle/actions/setup-gradle@v4
         with:
